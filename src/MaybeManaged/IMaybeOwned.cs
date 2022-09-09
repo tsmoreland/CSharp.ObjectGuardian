@@ -1,4 +1,4 @@
-﻿namespace TSMoreland.TransferableOwnership.MaybeMovables;
+﻿namespace TSMoreland.TransferableOwnership.MaybeManaged;
 
 /// <summary>
 /// Container class storing at most 1 item, and is responsible for the disposal of that item if present

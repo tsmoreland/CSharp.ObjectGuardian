@@ -1,4 +1,4 @@
-﻿namespace TSMoreland.TransferableOwnership.MaybeMovables;
+﻿namespace TSMoreland.TransferableOwnership.MaybeManaged;
 
 /// <summary>
 /// Manages an instance of <see cref="IDisposable"/> ensuring that it is
