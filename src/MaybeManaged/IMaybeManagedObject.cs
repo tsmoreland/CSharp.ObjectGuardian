@@ -17,7 +17,7 @@ namespace TSMoreland.MaybeManaged;
 /// Container class storing at most 1 item, and is responsible for the disposal of that item if present
 /// </summary>
 /// <typeparam name="T">The type of the stored value</typeparam>
-public interface IMaybeOwned<T> : IDisposable
+public interface IMaybeManagedObject<T> : IDisposable
     where T : IDisposable
 {
     /// <summary>
@@ -75,7 +75,7 @@ public interface IMaybeOwned<T> : IDisposable
     /// If a value is present, apply the
     /// provided Maybe-bearing mapping function to it,
     /// return that result, otherwise return
-    /// an empty <see cref="IMaybeOwned{T}"/>.
+    /// an empty <see cref="IMaybeManagedObject{T}"/>.
     /// </summary>
     /// <typeparam name="TMapped"></typeparam>
     /// <param name="mapper">
@@ -83,8 +83,8 @@ public interface IMaybeOwned<T> : IDisposable
     /// should not dispose the owned type as that remains the responsibility of this instance
     /// </param>
     /// <returns>
-    /// <see cref="IMaybeOwned{TMapped}"/> containing mapped result if present for this instance;
-    /// otherwise an empty <see cref="IMaybeOwned{TMapped}"/>
+    /// <see cref="IMaybeManagedObject{TMapped}"/> containing mapped result if present for this instance;
+    /// otherwise an empty <see cref="IMaybeManagedObject{TMapped}"/>
     /// </returns>
-    IMaybeOwned<TMapped> Map<TMapped>(Func<T, TMapped> mapper) where TMapped : IDisposable;
+    IMaybeManagedObject<TMapped> Map<TMapped>(Func<T, TMapped> mapper) where TMapped : IDisposable;
 }

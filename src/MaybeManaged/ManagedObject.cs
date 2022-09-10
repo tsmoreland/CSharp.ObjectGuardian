@@ -14,64 +14,51 @@
 namespace TSMoreland.MaybeManaged;
 
 /// <summary>
-/// Factory methods for <see cref="MaybeOwned{T}"/>
+/// Manages a <typeparamref name="T"/> if this instance is the current owner making it responsible
+/// for the disposal of the owned object
 /// </summary>
-public static class MaybeOwned
-{
-    /// <summary>
-    /// Creates an instance of <see cref="MaybeOwned{T}"/> containing <paramref name="value"/>
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public static MaybeOwned<T> Of<T>(T value) where T : IDisposable
-    {
-        return new MaybeOwned<T>(true, value);
-    }
-
-    /// <summary>
-    /// Creates an empty instance of <see cref="MaybeOwned{T}"/>
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns>an empty instance of <see cref="MaybeOwned{T}"/></returns>
-    public static MaybeOwned<T> Empty<T>() where T : IDisposable =>
-        new();
-}
-
-public struct MaybeOwned<T> : IMaybeOwned<T>
+/// <typeparam name="T">
+/// <see cref="IDisposable"/> object which will be disposed when this instance is, unless ownership is transfer
+/// </typeparam>
+public sealed class ManagedObject<T> : IManagedObject<T>
     where T : IDisposable
 {
-    public MaybeOwned()
-        :this(false, default)
+    /// <summary>
+    /// Instanties a new instance of <see cref="ManagedObject{T}"/> that does not
+    /// own an object of type <typeparamref name="T"/>
+    /// </summary>
+    public ManagedObject()
+        : this(false, default)
     {
     }
 
-    internal MaybeOwned(bool hasValue, T? value)
+    /// <summary>
+    /// Instanties a new instance of <see cref="ManagedObject{T}"/> that owns
+    /// <paramref name="value"/>
+    /// </summary>
+    /// <param name="value">the object to be managed by this instance.</param>
+    public ManagedObject(T value)
+        : this(true, value)
     {
-        HasValue = hasValue;
+    }
+
+    private ManagedObject(bool hasValue, T? value)
+    {
+        HasValue =  hasValue;
         Value = value;
     }
 
     /// <inheritdoc />
-    public bool HasValue { get; private set; }
+    public void Reset(T? value = default) => throw new NotImplementedException();
+
+    /// <inheritdoc />
+    public T? Release() => throw new NotImplementedException();
 
     /// <inheritdoc />
     public T? Value { get; private set; }
 
     /// <inheritdoc />
-    public readonly T OrElse(T other) => throw new NotImplementedException();
-
-    /// <inheritdoc />
-    public readonly T OrElse(Func<T> supplier) => throw new NotImplementedException();
-
-    /// <inheritdoc />
-    public T OrThrow() => throw new NotImplementedException();
-
-    /// <inheritdoc />
-    public T OrThrow(Func<Exception> supplier) => throw new NotImplementedException();
-
-    /// <inheritdoc />
-    public IMaybeOwned<TMapped> Map<TMapped>(Func<T, TMapped> mapper) where TMapped : IDisposable => throw new NotImplementedException();
+    public bool HasValue { get; private set; }
 
     /// <inheritdoc />
     public void Dispose() => throw new NotImplementedException();
