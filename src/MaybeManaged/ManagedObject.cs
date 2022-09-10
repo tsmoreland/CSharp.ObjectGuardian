@@ -61,5 +61,20 @@ public sealed class ManagedObject<T> : IManagedObject<T>
     public bool HasValue { get; private set; }
 
     /// <inheritdoc />
+    public T OrElse(T other) => throw new NotImplementedException();
+
+    /// <inheritdoc />
+    public T OrElse(Func<T> supplier) => throw new NotImplementedException();
+
+    /// <inheritdoc />
+    public T OrThrow() => throw new NotImplementedException();
+
+    /// <inheritdoc />
+    public T OrThrow(Func<Exception> supplier) => throw new NotImplementedException();
+
+    /// <inheritdoc />
+    public IManagedObject<TMapped> Map<TMapped>(Func<T, TMapped> mapper) where TMapped : IDisposable => throw new NotImplementedException();
+
+    /// <inheritdoc />
     public void Dispose() => throw new NotImplementedException();
 }
