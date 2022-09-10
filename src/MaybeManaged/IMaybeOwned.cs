@@ -11,7 +11,7 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-namespace TSMoreland.TransferableOwnership.MaybeManaged;
+namespace TSMoreland.MaybeManaged;
 
 /// <summary>
 /// Container class storing at most 1 item, and is responsible for the disposal of that item if present
