@@ -48,7 +48,7 @@ public interface IManagedObject<T> : IDisposable
     /// the managed object if owned; otherwise default value of <typeparamref name="T"/>
     /// which will be <see langword="null"/> for reference types
     /// </returns>
-    T? Value();
+    T? Value { get; }
 
     /// <summary>
     /// Returns <see langword="true"/> if <see cref="Value"/> is currently owned.
