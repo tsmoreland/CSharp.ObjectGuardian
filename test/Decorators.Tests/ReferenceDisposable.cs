@@ -13,7 +13,7 @@
 namespace TSMoreland.Extensions.Decorators.Tests;
 
 /// <summary>
-/// Test class used to verify <see cref="ManagedObjectTests{T}"/> when
+/// Test class used to verify <see cref="ManagedObject{T}"/> when
 /// <code>T</code> is a reference type
 /// </summary>
 public sealed class ReferenceDisposable : IDisposable
@@ -21,6 +21,9 @@ public sealed class ReferenceDisposable : IDisposable
     public bool Finalized { get; private set; }
 
     public bool Disposed { get; private set; }
+
+    public int DisposeCount { get; private set; }
+    public int FinalizeCount { get; private set; }
 
     ~ReferenceDisposable() => Dispose(false);
 
@@ -34,10 +37,12 @@ public sealed class ReferenceDisposable : IDisposable
     {
         if (disposing)
         {
+            DisposeCount++;
             Disposed = true;
         }
         else
         {
+            FinalizeCount++;
             Finalized = true;
         }
     }

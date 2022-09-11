@@ -13,15 +13,17 @@
 namespace TSMoreland.Extensions.Decorators.Tests;
 
 /// <summary>
-/// Test class used to verify <see cref="ManagedObjectTests{T}"/> when
+/// Test class used to verify <see cref="ManagedObject{T}"/> when
 /// <code>T</code> is a value type
 /// </summary>
 public struct ValueDisposable : IEquatable<ValueDisposable>, IDisposable
 {
     public bool Disposed { get; private set; }
+    public int DisposeCount { get; private set; }
 
     public void Dispose()
     {
+        DisposeCount++;
         Disposed = true;
     }
 
