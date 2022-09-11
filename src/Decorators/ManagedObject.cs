@@ -11,6 +11,8 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace TSMoreland.Extensions.Decorators;
 
 /// <summary>
@@ -40,11 +42,12 @@ public sealed class ManagedObject<T> : IManagedObject<T>
     public ManagedObject(T value)
         : this(true, value)
     {
+        ArgumentNullException.ThrowIfNull(value);
     }
 
     private ManagedObject(bool hasValue, T? value)
     {
-        HasValue =  hasValue;
+        HasValue = hasValue;
         Value = value;
     }
 
@@ -62,8 +65,9 @@ public sealed class ManagedObject<T> : IManagedObject<T>
     }
 
     /// <inheritdoc />
-    public void Reset(T? value)
+    public void Reset(T value)
     {
+        ArgumentNullException.ThrowIfNull(value);
         Reset();
         (HasValue, Value) = (true, value);
     }
@@ -80,36 +84,41 @@ public sealed class ManagedObject<T> : IManagedObject<T>
     public T? Value { get; private set; }
 
     /// <inheritdoc />
+    [MemberNotNullWhen(true, nameof(Value))]
     public bool HasValue { get; private set; }
 
     /// <inheritdoc />
     public T OrElse(T other)
     {
-        throw new NotImplementedException();
+        return HasValue
+            ? Value
+            : other;
     }
 
     /// <inheritdoc />
     public T OrElse(Func<T> supplier)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(supplier);
+        return HasValue
+            ? Value
+            : supplier();
     }
 
     /// <inheritdoc />
     public T OrThrow()
     {
-        throw new NotImplementedException();
+        return HasValue
+            ? Value
+            : throw new InvalidOperationException("Does not contain value");
     }
 
     /// <inheritdoc />
     public T OrThrow(Func<Exception> supplier)
     {
-        throw new NotImplementedException();
-    }
-
-    /// <inheritdoc />
-    public IManagedObject<TMapped> Map<TMapped>(Func<T, TMapped> mapper) where TMapped : IDisposable
-    {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(supplier);
+        return HasValue
+            ? Value
+            : throw supplier();
     }
 
     ~ManagedObject() => Dispose(false);

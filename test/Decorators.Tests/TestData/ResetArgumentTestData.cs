@@ -19,7 +19,7 @@ public sealed class ResetArgumentTestData : IEnumerable<object?[]>
     private readonly List<object?[]> _data = new()
     {
         new object?[] { false, null },
-        new object?[] { true, null },
+        new object?[] { true, new ValueDisposable() },
         new object?[] { true, new ReferenceDisposable() },
     };
 
