@@ -49,13 +49,32 @@ public sealed class ManagedObject<T> : IManagedObject<T>
     }
 
     /// <inheritdoc />
-    public void Reset() => throw new NotImplementedException();
+    public void Reset()
+    {
+        if (!HasValue)
+        {
+            return;
+        }
+
+        IDisposable? disposable = Value;
+        (HasValue, Value) = (false, default);
+        disposable?.Dispose();
+    }
 
     /// <inheritdoc />
-    public void Reset(T? value) => throw new NotImplementedException();
+    public void Reset(T? value)
+    {
+        Reset();
+        (HasValue, Value) = (true, value);
+    }
 
     /// <inheritdoc />
-    public T? Release() => throw new NotImplementedException();
+    public T? Release()
+    {
+        T? value = Value;
+        (HasValue, Value) = (false, default);
+        return value;
+    }
 
     /// <inheritdoc />
     public T? Value { get; private set; }
@@ -64,20 +83,47 @@ public sealed class ManagedObject<T> : IManagedObject<T>
     public bool HasValue { get; private set; }
 
     /// <inheritdoc />
-    public T OrElse(T other) => throw new NotImplementedException();
+    public T OrElse(T other)
+    {
+        throw new NotImplementedException();
+    }
 
     /// <inheritdoc />
-    public T OrElse(Func<T> supplier) => throw new NotImplementedException();
+    public T OrElse(Func<T> supplier)
+    {
+        throw new NotImplementedException();
+    }
 
     /// <inheritdoc />
-    public T OrThrow() => throw new NotImplementedException();
+    public T OrThrow()
+    {
+        throw new NotImplementedException();
+    }
 
     /// <inheritdoc />
-    public T OrThrow(Func<Exception> supplier) => throw new NotImplementedException();
+    public T OrThrow(Func<Exception> supplier)
+    {
+        throw new NotImplementedException();
+    }
 
     /// <inheritdoc />
-    public IManagedObject<TMapped> Map<TMapped>(Func<T, TMapped> mapper) where TMapped : IDisposable => throw new NotImplementedException();
+    public IManagedObject<TMapped> Map<TMapped>(Func<T, TMapped> mapper) where TMapped : IDisposable
+    {
+        throw new NotImplementedException();
+    }
+
+    ~ManagedObject() => Dispose(false);
 
     /// <inheritdoc />
-    public void Dispose() => throw new NotImplementedException();
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        _ = disposing;
+        Reset();
+    }
 }

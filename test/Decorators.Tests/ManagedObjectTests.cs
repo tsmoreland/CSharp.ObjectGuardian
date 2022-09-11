@@ -58,8 +58,6 @@ public sealed class ManagedObjectTests
         Assert.Equal(expected, actual);
     }
 
-#if DEBUG
-
     [Theory]
     [ClassData(typeof(ResetArgumentTestData))]
     public void ResetShouldDisposeCurrentValue(bool hasNewValue, IDisposable? value)
@@ -142,6 +140,7 @@ public sealed class ManagedObjectTests
         }
     }
 
+#if DEBUG
     [Fact]
     public void OrElseShouldReturnValueWhenHasValueIsTrue()
     {
@@ -205,6 +204,8 @@ public sealed class ManagedObjectTests
         Assert.Equal(expected, actual);
     }
 
+#endif
+
     [Fact]
     public void DispooseShouldDisposeValueWhenProvidedByConstructor()
     {
@@ -251,9 +252,7 @@ public sealed class ManagedObjectTests
 
         managedObject.Dispose();
 
-        value.Verify(m => m.Dispose(), Times.Once);
+        value.Verify(m => m.Dispose(), Times.Never);
     }
-
-#endif
 
 }
