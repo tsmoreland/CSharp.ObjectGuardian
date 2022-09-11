@@ -11,51 +11,104 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using TSMoreland.Extensions.Decorators.Tests.TestData;
+
 namespace TSMoreland.Extensions.Decorators.Tests;
 
-public abstract class ManagedObjectTests<T> where T : IDisposable
+public sealed class ManagedObjectTests
 {
-    /// <summary>
-    /// Build an instance of <typeparamref name="T"/> when
-    /// </summary>
-    protected abstract T Build();
-
     [Fact]
     public void HasValueShouldReturnFalseWhenBuiltUsingDefaultConstructor()
     {
-        ManagedObject<T> managedObject = new();
+        ManagedObject<IDisposable> managedObject = new();
         Assert.False(managedObject.HasValue);
     }
 
     [Fact]
     public void HasValueShouldReturnTrueWhenBuiltWithNonDefaultValue()
     {
-        ManagedObject<T> managedObject = new(Build());
+        Mock<IDisposable> value = new();
+        ManagedObject<IDisposable> managedObject = new(value.Object);
         Assert.True(managedObject.HasValue);
     }
 
     [Fact]
     public void HasValueShouldReturnTrueWhenBuiltWithDefaultValue()
     {
-        ManagedObject<T> managedObject = new(default!);
+        ManagedObject<IDisposable> managedObject = new(default!);
         Assert.True(managedObject.HasValue);
     }
 
     [Fact]
     public void ValueShouldReturnDefaultWhenHasValueIsFalse()
     {
-        T? expected = default;
-        ManagedObject<T> managedObject = new();
-        T? actual = managedObject.Value;
+        IDisposable? expected = default;
+        ManagedObject<IDisposable> managedObject = new();
+        IDisposable? actual = managedObject.Value;
         Assert.Equal(expected, actual);
     }
 
     [Fact]
     public void ValueShouldReturnGivenWhenHasValueIsTrue()
     {
-        T? expected = Build();
-        ManagedObject<T> managedObject = new(expected);
-        T? actual = managedObject.Value;
+        Mock<IDisposable> value = new();
+        IDisposable expected = value.Object;
+        ManagedObject<IDisposable> managedObject = new(expected);
+        IDisposable? actual = managedObject.Value;
         Assert.Equal(expected, actual);
     }
+
+#if DEBUG
+
+    [Theory]
+    [ClassData(typeof(ResetArgumentTestData))]
+    public void ResetShouldDisposeCurrentValue(bool hasNewValue, ManagedObject<IDisposable>? value)
+    {
+        Mock<IDisposable> initialValue = new();
+        ManagedObject<IDisposable> managedObject = new(initialValue.Object);
+
+        if (hasNewValue)
+        {
+            managedObject.Reset(value);
+        }
+        else
+        {
+            managedObject.Reset();
+        }
+
+        initialValue.Verify(m => m.Dispose(), Times.Once);
+    }
+
+    [Fact]
+    public void ResetShouldTakeOwnershipWhenGivenNewReferenceTypeValue()
+    {
+        Mock<ReferenceDisposable> initialValue = new();
+        ReferenceDisposable newValue = new();
+        ManagedObject<ReferenceDisposable> managedObject = new(initialValue.Object);
+
+        managedObject.Reset(newValue);
+
+        Assert.True(managedObject.HasValue);
+        Assert.Equal(newValue, managedObject.Value);
+    }
+
+    [Fact]
+    public void ResetShouldTakeOwnershipWhenGivenNewValueTypeValue()
+    {
+        ValueDisposable initialValue = new();
+        ValueDisposable newValue = new();
+        ManagedObject<ValueDisposable> managedObject = new(initialValue);
+
+        managedObject.Reset(newValue);
+
+        Assert.True(managedObject.HasValue);
+        Assert.Equal(newValue, managedObject.Value);
+    }
+
+    // Dispose Should Dispose Owned Value When Provided by constructor
+    // Dispose Should Dispose Owned Reference Type with Default value provided by Reset
+    // Dispose Should But Dispose Owned Value Type with Default value provided by Reset
+
+#endif
+
 }
