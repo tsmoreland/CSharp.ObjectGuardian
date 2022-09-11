@@ -62,7 +62,7 @@ public sealed class ManagedObjectTests
 
     [Theory]
     [ClassData(typeof(ResetArgumentTestData))]
-    public void ResetShouldDisposeCurrentValue(bool hasNewValue, ManagedObject<IDisposable>? value)
+    public void ResetShouldDisposeCurrentValue(bool hasNewValue, IDisposable? value)
     {
         Mock<IDisposable> initialValue = new();
         ManagedObject<IDisposable> managedObject = new(initialValue.Object);
@@ -82,9 +82,9 @@ public sealed class ManagedObjectTests
     [Fact]
     public void ResetShouldTakeOwnershipWhenGivenNewReferenceTypeValue()
     {
-        Mock<ReferenceDisposable> initialValue = new();
+        ReferenceDisposable initialValue = new();
         ReferenceDisposable newValue = new();
-        ManagedObject<ReferenceDisposable> managedObject = new(initialValue.Object);
+        ManagedObject<ReferenceDisposable> managedObject = new(initialValue);
 
         managedObject.Reset(newValue);
 

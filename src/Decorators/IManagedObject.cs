@@ -114,7 +114,7 @@ public interface IManagedObject<T> : IDisposable
     /// </param>
     /// <returns>
     /// <see cref="IManagedObject{TMapped}"/> containing mapped result if present for this instance;
-    /// otherwise an empty <see cref="IMaybeManagedObject{TMapped}"/>
+    /// otherwise an empty <see cref="IManagedObject{TMapped}"/>
     /// </returns>
     IManagedObject<TMapped> Map<TMapped>(Func<T, TMapped> mapper) where TMapped : IDisposable;
 }
