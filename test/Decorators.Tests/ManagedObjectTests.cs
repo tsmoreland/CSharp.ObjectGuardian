@@ -18,6 +18,21 @@ namespace TSMoreland.Extensions.Decorators.Tests;
 public sealed class ManagedObjectTests
 {
     [Fact]
+    public void ConstructorShouldThrowArgumentNullExceptionWhenValueIsNull()
+    {
+        ArgumentNullException? ex = Assert
+            .Throws<ArgumentNullException>(() => _ = new ManagedObject<ReferenceDisposable>(null!));
+        Assert.Equal("value", ex!.ParamName);
+    }
+
+
+    [Fact]
+    public void ConstructorShouldNotThrowWhenValueIsDefaultValueType()
+    {
+        _ = new ManagedObject<ValueDisposable>(default);
+    }
+
+    [Fact]
     public void HasValueShouldReturnFalseWhenBuiltUsingDefaultConstructor()
     {
         ManagedObject<IDisposable> managedObject = new();
@@ -33,9 +48,9 @@ public sealed class ManagedObjectTests
     }
 
     [Fact]
-    public void HasValueShouldReturnTrueWhenBuiltWithDefaultValue()
+    public void HasValueShouldReturnTrueWhenBuiltWithDefaultValueType()
     {
-        ManagedObject<IDisposable> managedObject = new(default!);
+        ManagedObject<ValueDisposable> managedObject = new(default);
         Assert.True(managedObject.HasValue);
     }
 
@@ -58,11 +73,26 @@ public sealed class ManagedObjectTests
         Assert.Equal(expected, actual);
     }
 
-#if DEBUG
+    [Fact]
+    public void ResetShouldThrowArgumentNullExceptionWhenValueIsNull()
+    {
+        ManagedObject<ReferenceDisposable> managedObject = new();
+
+        ArgumentNullException? ex = Assert
+            .Throws<ArgumentNullException>(() => managedObject.Reset(null!));
+        Assert.Equal("value", ex!.ParamName);
+    }
+
+    [Fact]
+    public void ResetShouldNotThrowWhenValueIsDefaultValueType()
+    {
+        ManagedObject<ValueDisposable> managedObject = new();
+        managedObject.Reset(default);
+    }
 
     [Theory]
     [ClassData(typeof(ResetArgumentTestData))]
-    public void ResetShouldDisposeCurrentValue(bool hasNewValue, IDisposable? value)
+    public void ResetShouldDisposeCurrentValue(bool hasNewValue, IDisposable value)
     {
         Mock<IDisposable> initialValue = new();
         ManagedObject<IDisposable> managedObject = new(initialValue.Object);
@@ -166,6 +196,40 @@ public sealed class ManagedObjectTests
     }
 
     [Fact]
+    public void OrElseWithSupplierShouldThrowArugumentNullExceptionWhenSupplierIsNull()
+    {
+        Mock<IDisposable> value = new();
+        ManagedObject<IDisposable> managedObject = new(value.Object);
+
+        ArgumentNullException? ex = Assert
+            .Throws<ArgumentNullException>(() => managedObject.OrElse((Func<IDisposable>)null!));
+        Assert.Equal("supplier", ex!.ParamName);
+    }
+
+    [Fact]
+    public void OrElseWithSupplierShouldReturnValueWhenHasValueIsTrue()
+    {
+        Mock<IDisposable> expected = new();
+        Mock<IDisposable> other = new();
+        ManagedObject<IDisposable> managedObject = new(expected.Object);
+
+        IDisposable actual = managedObject.OrElse(() => other.Object);
+
+        Assert.Equal(expected.Object, actual);
+    }
+
+    [Fact]
+    public void OrElseWithSupplierShouldReturnElseValueWhenHasValueIsFalse()
+    {
+        Mock<IDisposable> expected = new();
+        ManagedObject<IDisposable> managedObject = new();
+
+        IDisposable actual = managedObject.OrElse(() => expected.Object);
+
+        Assert.Equal(expected.Object, actual);
+    }
+
+    [Fact]
     public void OrThrowShouldReturnValueWhenHasValueIsTrue()
     {
         Mock<IDisposable> expected = new();
@@ -181,6 +245,17 @@ public sealed class ManagedObjectTests
     {
         ManagedObject<IDisposable> managedObject = new();
         Assert.Throws<InvalidOperationException>(() => _ = managedObject.OrThrow());
+    }
+
+    [Fact]
+    public void OrThrowWithSupplierShouldThrowArugumentNullExceptionWhenSupplierIsNull()
+    {
+        Mock<IDisposable> value = new();
+        ManagedObject<IDisposable> managedObject = new(value.Object);
+
+        ArgumentNullException? ex = Assert
+            .Throws<ArgumentNullException>(() => managedObject.OrThrow(null!));
+        Assert.Equal("supplier", ex!.ParamName);
     }
 
     [Fact]
@@ -251,9 +326,7 @@ public sealed class ManagedObjectTests
 
         managedObject.Dispose();
 
-        value.Verify(m => m.Dispose(), Times.Once);
+        value.Verify(m => m.Dispose(), Times.Never);
     }
-
-#endif
 
 }

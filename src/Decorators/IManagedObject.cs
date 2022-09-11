@@ -39,7 +39,7 @@ public interface IManagedObject<T> : IDisposable
     /// ensure the original value is disposed if <see cref="HasValue"/> is <see langword="true"/>
     /// </summary>
     /// <param name="value">value to be managed</param>
-    void Reset(T? value);
+    void Reset(T value);
 
     /// <summary>
     /// returns <see cref="Value"/> and releases the ownership
@@ -100,21 +100,4 @@ public interface IManagedObject<T> : IDisposable
     /// Contained <typeparamref name="T"/> if present
     /// </returns>
     T OrThrow(Func<Exception> supplier);
-
-    /// <summary>
-    /// If a <see cref="HasValue"/> is <see langword="true"/>, apply the
-    /// provided <see cref="ManagedObject{TMapped}"/>-bearing mapping function to it,
-    /// return that result, otherwise return
-    /// an empty <see cref="IManagedObject{TMapped}"/>.
-    /// </summary>
-    /// <typeparam name="TMapped"></typeparam>
-    /// <param name="mapper">
-    /// mapper used to map <typeparamref name="T"/> to <typeparamref name="TMapped"/>; mapped function
-    /// should not dispose the owned type as that remains the responsibility of this instance
-    /// </param>
-    /// <returns>
-    /// <see cref="IManagedObject{TMapped}"/> containing mapped result if present for this instance;
-    /// otherwise an empty <see cref="IManagedObject{TMapped}"/>
-    /// </returns>
-    IManagedObject<TMapped> Map<TMapped>(Func<T, TMapped> mapper) where TMapped : IDisposable;
 }
