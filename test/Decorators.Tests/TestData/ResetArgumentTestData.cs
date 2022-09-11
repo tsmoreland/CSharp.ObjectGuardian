@@ -10,10 +10,22 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-namespace TSMoreland.Extensions.Decorators.Tests;
+using System.Collections;
 
-public sealed class ManagedValueObjectTests : ManagedObjectTests<ValueDisposable>
+namespace TSMoreland.Extensions.Decorators.Tests.TestData;
+
+public sealed class ResetArgumentTestData : IEnumerable<object?[]>
 {
+    private readonly List<object?[]> _data = new()
+    {
+        new object?[] { false, null },
+        new object?[] { true, null },
+        new object?[] { true, new ReferenceDisposable() },
+    };
+
     /// <inheritdoc />
-    protected override ValueDisposable Build() => new();
+    public IEnumerator<object?[]> GetEnumerator() => _data.GetEnumerator();
+
+    /// <inheritdoc />
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

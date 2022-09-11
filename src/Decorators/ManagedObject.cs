@@ -49,7 +49,10 @@ public sealed class ManagedObject<T> : IManagedObject<T>
     }
 
     /// <inheritdoc />
-    public void Reset(T? value = default) => throw new NotImplementedException();
+    public void Reset() => throw new NotImplementedException();
+
+    /// <inheritdoc />
+    public void Reset(T? value) => throw new NotImplementedException();
 
     /// <inheritdoc />
     public T? Release() => throw new NotImplementedException();

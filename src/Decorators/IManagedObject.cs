@@ -29,11 +29,17 @@ public interface IManagedObject<T> : IDisposable
 {
 
     /// <summary>
+    /// disposes of the owned <see cref="Value"/> if <see cref="HasValue"/> is <see langword="true"/>.
+    /// <see cref="HasValue"/> will be <see langword="false"/> after this is called.
+    /// </summary>
+    void Reset();
+
+    /// <summary>
     /// replaces the managed object with <paramref name="value"/>
     /// ensure the original value is disposed if <see cref="HasValue"/> is <see langword="true"/>
     /// </summary>
     /// <param name="value">value to be managed</param>
-    void Reset(T? value = default);
+    void Reset(T? value);
 
     /// <summary>
     /// returns <see cref="Value"/> and releases the ownership
