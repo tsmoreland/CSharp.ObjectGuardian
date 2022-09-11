@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Decorators\TSMoreland.Extensions.Decorators.csproj" />
+  </ItemGroup>
+
 </Project>
