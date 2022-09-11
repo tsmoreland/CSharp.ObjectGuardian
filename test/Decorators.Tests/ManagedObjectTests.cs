@@ -105,9 +105,154 @@ public sealed class ManagedObjectTests
         Assert.Equal(newValue, managedObject.Value);
     }
 
-    // Dispose Should Dispose Owned Value When Provided by constructor
-    // Dispose Should Dispose Owned Reference Type with Default value provided by Reset
-    // Dispose Should But Dispose Owned Value Type with Default value provided by Reset
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ReleaseShouldNotDisposeCurrentValueIfHasValue(bool hasValue)
+    {
+        Mock<IDisposable> disposable = new();
+        ManagedObject<IDisposable> managedObject = hasValue
+            ? new ManagedObject<IDisposable>(disposable.Object)
+            : new ManagedObject<IDisposable>();
+
+        _ = managedObject.Release();
+
+        disposable.Verify(m => m.Dispose(), Times.Never);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ReleaseShouldValueOrNull(bool hasValue)
+    {
+        Mock<IDisposable> expected = new();
+        ManagedObject<IDisposable> managedObject = hasValue
+            ? new ManagedObject<IDisposable>(expected.Object)
+            : new ManagedObject<IDisposable>();
+
+        IDisposable? actual = managedObject.Release();
+
+        if (hasValue)
+        {
+            Assert.Equal(expected.Object, actual);
+        }
+        else
+        {
+            Assert.Null(actual);
+        }
+    }
+
+    [Fact]
+    public void OrElseShouldReturnValueWhenHasValueIsTrue()
+    {
+        Mock<IDisposable> expected = new();
+        Mock<IDisposable> other = new();
+        ManagedObject<IDisposable> managedObject = new(expected.Object);
+
+        IDisposable actual = managedObject.OrElse(other.Object);
+
+        Assert.Equal(expected.Object, actual);
+    }
+
+    [Fact]
+    public void OrElseShouldReturnElseValueWhenHasValueIsFalse()
+    {
+        Mock<IDisposable> expected = new();
+        ManagedObject<IDisposable> managedObject = new();
+
+        IDisposable actual = managedObject.OrElse(expected.Object);
+
+        Assert.Equal(expected.Object, actual);
+    }
+
+    [Fact]
+    public void OrThrowShouldReturnValueWhenHasValueIsTrue()
+    {
+        Mock<IDisposable> expected = new();
+        ManagedObject<IDisposable> managedObject = new(expected.Object);
+
+        IDisposable actual = managedObject.OrThrow();
+
+        Assert.Equal(expected.Object, actual);
+    }
+
+    [Fact]
+    public void OrThrowShouldThrowInvalidOperationExceptionWhenHasValueIsFalse()
+    {
+        ManagedObject<IDisposable> managedObject = new();
+        Assert.Throws<InvalidOperationException>(() => _ = managedObject.OrThrow());
+    }
+
+    [Fact]
+    public void OrThrowWithSupplierShouldReturnValueWhenHasValueIsTrue()
+    {
+        Exception ex = new();
+        Mock<IDisposable> expected = new();
+        ManagedObject<IDisposable> managedObject = new(expected.Object);
+
+        IDisposable actual = managedObject.OrThrow(() => ex);
+
+        Assert.Equal(expected.Object, actual);
+    }
+
+    [Fact]
+    public void OrThrowWithSupplierShouldThrowWhenHasValueIsFalse()
+    {
+        Exception expected = new();
+        ManagedObject<IDisposable> managedObject = new();
+
+        Exception? actual = Assert.Throws<Exception>(() => _ = managedObject.OrThrow(() => expected));
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void DispooseShouldDisposeValueWhenProvidedByConstructor()
+    {
+        Mock<IDisposable> value = new();
+        ManagedObject<IDisposable> managedObject = new(value.Object);
+
+        managedObject.Dispose();
+
+        value.Verify(m => m.Dispose(), Times.Once);
+    }
+
+    [Fact]
+    public void DiposeShouldDisposeValueProvidedByReset()
+    {
+        Mock<IDisposable> value = new();
+        Mock<IDisposable> resetValue = new();
+        ManagedObject<IDisposable> managedObject = new(value.Object);
+        managedObject.Reset(resetValue.Object);
+
+        managedObject.Dispose();
+
+        resetValue.Verify(m => m.Dispose(), Times.Once);
+    }
+
+    [Fact]
+    public void DisposeShouldDisposeValueProvidedByConstructorWhenReset()
+    {
+        Mock<IDisposable> value = new();
+        Mock<IDisposable> resetValue = new();
+        ManagedObject<IDisposable> managedObject = new(value.Object);
+        managedObject.Reset(resetValue.Object);
+
+        managedObject.Dispose();
+
+        value.Verify(m => m.Dispose(), Times.Once);
+    }
+
+    [Fact]
+    public void DisposeShouldNotDisposeValueWhenReleased()
+    {
+        Mock<IDisposable> value = new();
+        ManagedObject<IDisposable> managedObject = new(value.Object);
+        _ = managedObject.Release();
+
+        managedObject.Dispose();
+
+        value.Verify(m => m.Dispose(), Times.Once);
+    }
 
 #endif
 
