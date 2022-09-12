@@ -18,6 +18,21 @@ namespace TSMoreland.Extensions.Decorators.Tests;
 public sealed class ManagedObjectTests
 {
     [Fact]
+    public void FromNullableShouldReturnManagedObjectWithHasValueTrueWhenValueIsNotNull()
+    {
+        Mock<IDisposable> value = new();
+        ManagedObject<IDisposable> managedObject = ManagedObject.FromNullable(value.Object);
+        Assert.True(managedObject.HasValue);
+    }
+
+    [Fact]
+    public void FromNullableShouldReturnManagedObjectWithHasValueFalseWhenValueIsNull()
+    {
+        ManagedObject<IDisposable> managedObject = ManagedObject.FromNullable<IDisposable>(null);
+        Assert.False(managedObject.HasValue);
+    }
+
+    [Fact]
     public void ConstructorShouldThrowArgumentNullExceptionWhenValueIsNull()
     {
         ArgumentNullException? ex = Assert
@@ -110,6 +125,43 @@ public sealed class ManagedObjectTests
     }
 
     [Fact]
+    public void ResetAndReplaceIfNotNullShouldSetValueAndHasValueToReplacementWhenNotNull()
+    {
+        Mock<IDisposable> initialValue = new();
+        ManagedObject<IDisposable> managedObject = new(initialValue.Object);
+
+        IDisposable expected = new ReferenceDisposable();
+        managedObject.ResetAndReplaceIfNotNull(expected);
+
+        IDisposable? actual = managedObject.Value;
+
+        Assert.True(managedObject.HasValue);
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ResetAndReplaceIfNotNullShouldDisposeOriginalValueWhenHasValueIsTrue(bool replacementNonNull)
+    {
+        Mock<IDisposable> initialValue = new();
+        ManagedObject<IDisposable> managedObject = new(initialValue.Object);
+
+        if (replacementNonNull)
+        {
+            managedObject.ResetAndReplaceIfNotNull(new ReferenceDisposable());
+        }
+        else
+        {
+            managedObject.ResetAndReplaceIfNotNull(null);
+            Assert.False(managedObject.HasValue);
+        }
+
+        initialValue.Verify(m => m.Dispose(), Times.Once);
+    }
+
+
+    [Fact]
     public void ResetShouldTakeOwnershipWhenGivenNewReferenceTypeValue()
     {
         ReferenceDisposable initialValue = new();
@@ -170,6 +222,25 @@ public sealed class ManagedObjectTests
         {
             Assert.Null(actual);
         }
+    }
+
+    [Fact]
+    public void ReleaseOrThrowShouldReturnValueWhenHasValueIsTrue()
+    {
+        Mock<IDisposable> expected = new();
+        ManagedObject<IDisposable> managedObject = ManagedObject.FromNullable(expected.Object);
+
+        IDisposable actual = managedObject.ReleaseOrThrow();
+
+        Assert.Equal(expected.Object, actual);
+    }
+
+    [Fact]
+    public void ReleaseOrThrowShouldThrowInvalidOperationExceptionWhenHasValueIsFalse()
+    {
+        ManagedObject<IDisposable> managedObject = ManagedObject.FromNullable<IDisposable>(null);
+
+        Assert.Throws<InvalidOperationException>(() => _ = managedObject.ReleaseOrThrow());
     }
 
     [Fact]
