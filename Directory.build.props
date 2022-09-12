@@ -4,7 +4,7 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
     <AssemblyInformationalVersion>1.0.0.0</AssemblyInformationalVersion>
-    <Version>1.0.0-beta</Version>
+    <Version>1.0.0</Version>
 
     <Product>TSMoreland.Extensions.Decorators</Product>
     <Copyright>Copyright © 2022 Terry Moreland</Copyright>
