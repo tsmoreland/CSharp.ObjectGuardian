@@ -91,7 +91,7 @@ public sealed class ManagedObject<T> : IManagedObject<T>
         (HasValue, Value) = (true, value);
     }
 
-    public void ResetWithNewValueIfNotNull(T? value)
+    public void ResetAndReplaceIfNotNull(T? value)
     {
         Reset();
         if (value is not null)
