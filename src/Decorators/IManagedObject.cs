@@ -42,10 +42,21 @@ public interface IManagedObject<T> : IDisposable
     void Reset(T value);
 
     /// <summary>
-    /// returns <see cref="Value"/> and releases the ownership
+    /// returns <see cref="Value"/> and releases the ownership if
+    /// <see cref="HasValue"/> is <see langword="true"/>
+    /// otherise; default value
     /// </summary>
     /// <returns><see cref="Value"/></returns>
     T? Release();
+
+    /// <summary>
+    /// returns <see cref="Value"/> and releases the ownership
+    /// </summary>
+    /// <returns><see cref="Value"/></returns>
+    /// <exception cref="InvalidOperationException">
+    /// if <see cref="HasValue"/> is <see langword="False"/>
+    /// </exception>
+    T ReleaseOrThrow();
 
     /// <summary>
     /// The managed object;
