@@ -15,6 +15,24 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace TSMoreland.Extensions.Decorators;
 
+public static class ManagedObject
+{
+    /// <summary>
+    /// Constructs a new instance of <see cref="ManagedObject{T}"/> which manages <paramref name="value"/>
+    /// if <paramref name="value"/> is not <see langword="null"/>
+    /// </summary>
+    /// <param name="value">parameter to manage</param>
+    /// <returns>a new instance of <see cref="ManagedObject{T}"/></returns>
+    public static ManagedObject<T> FromNullable<T>(T? value) where T : IDisposable
+    {
+        return value is not null
+            ? new ManagedObject<T>(value)
+            : new ManagedObject<T>();
+    }
+
+
+}
+
 /// <summary>
 /// Manages a <typeparamref name="T"/> if this instance is the current owner making it responsible
 /// for the disposal of the owned object
@@ -25,6 +43,7 @@ namespace TSMoreland.Extensions.Decorators;
 public sealed class ManagedObject<T> : IManagedObject<T>
     where T : IDisposable
 {
+
     /// <summary>
     /// Instanties a new instance of <see cref="ManagedObject{T}"/> that does not
     /// own an object of type <typeparamref name="T"/>
@@ -72,12 +91,31 @@ public sealed class ManagedObject<T> : IManagedObject<T>
         (HasValue, Value) = (true, value);
     }
 
+    public void ResetWithNewValueIfNotNull(T? value)
+    {
+        Reset();
+        if (value is not null)
+        {
+            (HasValue, Value) = (true, value);
+        }
+    }
+
     /// <inheritdoc />
     public T? Release()
     {
         T? value = Value;
         (HasValue, Value) = (false, default);
         return value;
+    }
+
+    /// <inheritdoc />
+    public T ReleaseOrThrow()
+    {
+        if (!HasValue)
+        {
+            throw new InvalidOperationException("Does not contain value");
+        }
+        return Release()!;
     }
 
     /// <inheritdoc />
