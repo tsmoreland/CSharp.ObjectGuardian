@@ -11,7 +11,7 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-namespace TSMoreland.MaybeManaged;
+namespace TSMoreland.Extensions.Decorators;
 
 /// <summary>
 /// Manages an instance of <see cref="IDisposable"/> ensuring that it is
@@ -29,11 +29,17 @@ public interface IManagedObject<T> : IDisposable
 {
 
     /// <summary>
+    /// disposes of the owned <see cref="Value"/> if <see cref="HasValue"/> is <see langword="true"/>.
+    /// <see cref="HasValue"/> will be <see langword="false"/> after this is called.
+    /// </summary>
+    void Reset();
+
+    /// <summary>
     /// replaces the managed object with <paramref name="value"/>
     /// ensure the original value is disposed if <see cref="HasValue"/> is <see langword="true"/>
     /// </summary>
     /// <param name="value">value to be managed</param>
-    void Reset(T? value = default);
+    void Reset(T value);
 
     /// <summary>
     /// returns <see cref="Value"/> and releases the ownership
@@ -48,12 +54,50 @@ public interface IManagedObject<T> : IDisposable
     /// the managed object if owned; otherwise default value of <typeparamref name="T"/>
     /// which will be <see langword="null"/> for reference types
     /// </returns>
-    T? Value();
+    T? Value { get; }
 
     /// <summary>
     /// Returns <see langword="true"/> if <see cref="Value"/> is currently owned.
     /// </summary>
     bool HasValue { get; }
 
+    /// <summary>
+    /// Returns <see cref="Value"/> if <see cref="HasValue"/> is <see langword="true"/> or
+    /// <paramref name="other"/>
+    /// </summary>
+    /// <param name="other">alternative value used if <see cref="HasValue"/> is <see langword="false"/></param>
+    /// <returns></returns>
+    T OrElse(T other);
 
+    /// <summary>
+    /// Returns <see cref="Value"/> if <see cref="HasValue"/> is <see langword="true"/> or
+    /// value supplied by <paramref name="supplier"/>
+    /// </summary>
+    /// <param name="supplier">
+    /// used to create an instance of <typeparamref name="T"/> if <see cref="HasValue"/> is <see langword="false"/>
+    /// </param>
+    /// <returns></returns>
+    T OrElse(Func<T> supplier);
+
+    /// <summary>
+    /// Returns <see cref="Value"/> if <see cref="HasValue"/> is <see langword="true"/> or
+    /// throw <see cref="InvalidOperationException"/>
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">
+    /// if <see cref="HasValue"/> is <see langword="false"/>
+    /// </exception>
+    T OrThrow();
+
+    /// <summary>
+    /// Returns <see cref="Value"/> if <see cref="HasValue"/> is <see langword="true"/> or
+    /// throw exception supplied by <paramref name="supplier"/>
+    /// </summary>
+    /// <param name="supplier">
+    /// function used to build exception thrown if value is not present
+    /// </param>
+    /// <returns>
+    /// Contained <typeparamref name="T"/> if present
+    /// </returns>
+    T OrThrow(Func<Exception> supplier);
 }

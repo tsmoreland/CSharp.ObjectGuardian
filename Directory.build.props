@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <VersionPrefix>1.0.0.0</VersionPrefix>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
+    <AssemblyInformationalVersion>1.0.0.0</AssemblyInformationalVersion>
+    <Version>1.0.0-alpha</Version>
+
+    <Product>TSMoreland.Extensions.Decorators</Product>
+    <Copyright>Copyright © 2022 Terry Moreland</Copyright>
+  </PropertyGroup>
+</Project>
