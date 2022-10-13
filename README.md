@@ -1,4 +1,4 @@
-# Decorators
+# Object Guardians
 
 ## CI Status
 
@@ -12,8 +12,8 @@
 
 ## Introduction
 
-This class library provides generic collectors providing functionality similar to C++23 library classes such as [expected (C++23)](https://en.cppreference.com/w/cpp/utility/expected/expected) and [```std::unique_ptr<T>```](https://en.cppreference.com/w/cpp/memory/unique_ptr), with additional ones added if/when a need arises.
-The objects also draw from ```java.util.Optional<T>``` providing additional methods to aid with functional programming.
+This class library provides generic classes providing functionality similar to C++23 library such as [expected (C++23)](https://en.cppreference.com/w/cpp/utility/expected/expected) and [```std::unique_ptr<T>```](https://en.cppreference.com/w/cpp/memory/unique_ptr), with additional ones added if/when a need arises.
+The objects also draw inspiration from ```java.util.Optional<T>``` providing additional methods to aid with functional programming.
 
 ### Expected
 
