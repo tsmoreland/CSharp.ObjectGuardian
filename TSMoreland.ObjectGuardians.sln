@@ -8,9 +8,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.Extensions.Decorators.Tests", "test\Decorators.Tests\TSMoreland.Extensions.Decorators.Tests.csproj", "{E7FE64F7-C187-4A11-8F6E-D47822E01D0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.ObjectGuardians.Tests", "test\ObjectGuardians.Tests\TSMoreland.ObjectGuardians.Tests.csproj", "{E7FE64F7-C187-4A11-8F6E-D47822E01D0E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.Extensions.Decorators", "src\Decorators\TSMoreland.Extensions.Decorators.csproj", "{E7145F07-90A8-40AE-931E-9CA46EB3E2C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSMoreland.ObjectGuardians.Decorators", "src\ObjectGuardians\TSMoreland.ObjectGuardians.csproj", "{E7145F07-90A8-40AE-931E-9CA46EB3E2C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

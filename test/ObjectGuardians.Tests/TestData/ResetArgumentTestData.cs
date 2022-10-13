@@ -12,7 +12,7 @@
 
 using System.Collections;
 
-namespace TSMoreland.Extensions.Decorators.Tests.TestData;
+namespace TSMoreland.ObjectGuardians.Tests.TestData;
 
 public sealed class ResetArgumentTestData : IEnumerable<object?[]>
 {

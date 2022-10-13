@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Decorators\TSMoreland.Extensions.Decorators.csproj" />
+    <ProjectReference Include="..\..\src\ObjectGuardians\TSMoreland.ObjectGuardians.csproj" />
   </ItemGroup>
 
 </Project>

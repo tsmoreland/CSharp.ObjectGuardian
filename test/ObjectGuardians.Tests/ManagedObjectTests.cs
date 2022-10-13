@@ -11,9 +11,9 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using TSMoreland.Extensions.Decorators.Tests.TestData;
+using TSMoreland.ObjectGuardians.Tests.TestData;
 
-namespace TSMoreland.Extensions.Decorators.Tests;
+namespace TSMoreland.ObjectGuardians.Tests;
 
 public sealed class ManagedObjectTests
 {

@@ -13,7 +13,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace TSMoreland.Extensions.Decorators;
+namespace TSMoreland.ObjectGuardians;
 
 public static class ManagedObject
 {
