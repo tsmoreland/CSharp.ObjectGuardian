@@ -129,11 +129,29 @@ public readonly ref struct Expected<TValue, TEnum>
 
 #endif
 
-    public TValue OrElse(in TValue other)
+    public void IfHasValue(Action<TValue> consumer)
+    {
+        ArgumentNullException.ThrowIfNull(consumer);
+        if (HasValue)
+        {
+            consumer(Value);
+        }
+    }
+
+    public TValue OrElseGet(in TValue other)
     {
         return HasValue
             ? Value
             : other;
+    }
+
+    public TValue OrElseThrow(Func<Exception> supplier)
+    {
+        ArgumentNullException.ThrowIfNull(supplier);
+
+        return HasValue
+            ? Value
+            : throw supplier();
     }
 
     public Expected<TMapped, TEnum> Select<TMapped>(Func<TValue, TMapped> mapper)
