@@ -161,4 +161,28 @@ public readonly ref struct Expected<TValue, TEnum>
             : new Expected<TMapped, TEnum>(Reason);
     }
 
+    /// <inheritdoc />
+    public override bool Equals([NotNullWhen(true)] object? obj)
+    {
+        if (obj is not Expected<TValue, TEnum> expected)
+        {
+            return false;
+        }
+
+        if (HasValue)
+        {
+            return HasValue == expected.HasValue && Value?.Equals(expected.Value) == true;
+        }
+        else
+        {
+            return !expected.HasValue;
+        }
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return Value?.GetHashCode() ?? 0;
+    }
+
 }
